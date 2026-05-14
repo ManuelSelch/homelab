@@ -1,0 +1,11 @@
+networks:
+  proxynet:
+    external: true
+    name: proxynet
+
+services:
+  cockpit:
+     container_name: cockpit
+     image: agentejo/cockpit
+     networks:
+       - proxynet
