@@ -1,0 +1,47 @@
+services:
+
+  sqldb:
+    image: mysql:5.7
+    container_name: kimai-db
+    volumes:
+      - mysql:/var/lib/mysql
+      - ./my.cnf:/root/.my.cnf:ro
+    environment:
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASS}
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASS}
+    command: --default-storage-engine innodb
+    restart: unless-stopped
+    healthcheck:
+      test: mysqladmin -p$$MYSQL_ROOT_PASSWORD ping -h localhost
+      interval: 20s
+      start_period: 10s
+      timeout: 10s
+      retries: 3
+    networks:
+      - proxynet
+
+  kimai:
+    image: kimai/kimai2:apache
+    container_name: kimai
+    volumes:
+      - ./data/data:/opt/kimai/var/data
+      - ./data/config/local.yaml:/opt/kimai/config/packages/local.yaml
+    environment:
+      - ADMINMAIL=admin@kimai.local
+      - ADMINPASS=changemeplease
+      - "DATABASE_URL=mysql://${DB_USER}:${DB_PASS}@sqldb/${DB_DATABASE}?charset=utf8mb4&serverVersion=5.7.40"
+      - TRUSTED_HOSTS=nginx|localhost|127.0.0.1|time.manuelselch.de
+    restart: unless-stopped
+    networks:
+      - proxynet
+
+volumes:
+  data:
+  mysql:
+
+networks:
+  proxynet:
+    external: true
+    name: proxynet
