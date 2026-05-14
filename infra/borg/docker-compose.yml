@@ -1,0 +1,33 @@
+services:
+  app:
+    image: ainullcode/borg-ui:latest
+    container_name: borg-web-ui
+    restart: unless-stopped
+    volumes:
+      - ./data/data:/data
+      - ./data/cache:/home/borg/.cache/borg
+      - /etc/localtime:/etc/localtime:ro
+      - /repos:/local/repos:rw
+      - /srv:/local/srv:ro
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+    cap_add:
+      - SYS_ADMIN
+    devices:
+      - /dev/fuse:/dev/fuse
+    security_opt:
+      - apparmor:unconfined
+    environment:
+      - PORT=8081
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+      - LOCAL_MOUNT_POINTS=/local/repos,/local/volumes,/local/prod
+      - REDIS_HOST=disabled
+      - BORG_FUSE_IMPL=pyfuse3
+    networks:
+      - proxynet
+
+networks:
+  proxynet:
+    external: true
+    name: proxynet
