@@ -3,6 +3,7 @@
 FILE=backup/kimai.sql
 KIMAI_CONTAINER=kimai
 DB_CONTAINER=kimai-db
+DB_DATABASE=kimai
 
 # get version
 docker exec -it ${KIMAI_CONTAINER} /opt/kimai/bin/console kimai:version --env=prod

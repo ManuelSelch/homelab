@@ -3,6 +3,7 @@
 FILE=backup/kimai.sql
 KIMAI_CONTAINER=kimai
 DB_CONTAINER=kimai-db
+DB_DATABASE=kimai
 
 # restore db
 cat ${FILE} | docker exec -i ${DB_CONTAINER} /usr/bin/mysql ${DB_DATABASE}
