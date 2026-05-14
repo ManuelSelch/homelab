@@ -1,11 +1,30 @@
+services:
+  cockpit:
+    container_name: cockpit
+    image: cockpithq/cockpit:core-2.14.0
+    restart: 'unless-stopped'
+    networks:
+      - proxynet
+    volumes:
+      - ./data/storage:/var/www/html/storage
+      - ./data/config:/var/www/html/config
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:8
+    restart: 'unless-stopped'
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - proxynet
+    environment:
+      - MONGO_INITDB_DATABASE=cockpit
+
 networks:
   proxynet:
     external: true
     name: proxynet
 
-services:
-  cockpit:
-     container_name: cockpit
-     image: agentejo/cockpit
-     networks:
-       - proxynet
+volumes:
+  mongo_data:
