@@ -1,0 +1,85 @@
+networks:
+  proxynet:
+      name: proxynet
+      external: true
+
+volumes:
+  overleaf_data:
+  overleaf_db:
+  overleaf_configdb:
+  overleaf_redis:
+
+services:
+    overleaf:
+      restart: on-failure:5
+      image: sharelatex/sharelatex:3.5.7
+      healthcheck:
+        test: curl -f http://localhost:80/ || exit 1
+      container_name: overleaf
+      networks:
+        - proxynet
+      depends_on:
+        mongo:
+          condition: service_healthy
+        redis:
+          condition: service_healthy
+      ports:
+        - 7643:80
+      stop_grace_period: 60s
+      volumes:
+        - overleaf_data:/var/lib/sharelatex
+      environment:
+        SHARELATEX_APP_NAME: Overleaf Community Edition
+        SHARELATEX_MONGO_URL: mongodb://mongo/sharelatex
+        SHARELATEX_REDIS_HOST: redis
+        REDIS_HOST: redis
+        ENABLED_LINKED_FILE_TYPES: project_file,project_output_file
+        ENABLE_CONVERSIONS: true
+        EMAIL_CONFIRMATION_DISABLED: false
+        SHARELATEX_ADMIN_EMAIL: manuel@selch.de
+        TEXMFVAR: /var/lib/sharelatex/tmp/texmf-var
+        SHARELATEX_SITE_URL: https://overleaf.manuelselch.de
+        SHARELATEX_NAV_TITLE: Overleaf
+        SHARELATEX_EMAIL_SMTP_HOST: smtp.strato.de
+        SHARELATEX_EMAIL_SMTP_PORT: 587
+        SHARELATEX_EMAIL_SMTP_USER: paper@manuelselch.de
+        SHARELATEX_EMAIL_SMTP_PASS: 1Ter6esai#Qabc
+        SHARELATEX_EMAIL_SMTP_TLS_REJECT_UNAUTH: true
+        SHARELATEX_EMAIL_SMTP_IGNORE_TLS: false
+        SHARELATEX_EMAIL_FROM_ADDRESS: noreply@manuelselch.de
+        SHARELATEX_EMAIL_SMTP_LOGGER: true
+
+    mongo:
+     restart: on-failure:5
+     image: mongo:4.4
+     networks:
+        - proxynet
+     expose:
+      - 27017
+     volumes:
+        - overleaf_db:/data/db
+        - overleaf_configdb:/data/configdb
+     healthcheck:
+       test: echo 'db.stats().ok' | mongo localhost:27017/test --quiet
+       interval: 10s
+       timeout: 10s
+       retries: 5
+    
+    redis:
+      restart: on-failure:5
+      networks:
+        - proxynet
+      image: redis
+      mem_limit: 256m
+      mem_reservation: 50m
+      cpu_shares: 768
+      security_opt:
+       - no-new-privileges:true
+      healthcheck:
+       test: ["CMD-SHELL", "redis-cli ping || exit 1"]
+      expose:
+       - 6379
+      volumes:
+       - overleaf_redis:/data
+      environment:
+       TZ: Europe/Bucharest
