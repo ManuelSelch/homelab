@@ -5,7 +5,8 @@ services:
     container_name: kimai-db
     volumes:
       - mysql:/var/lib/mysql
-      - ./my.cnf:/root/.my.cnf:ro
+    ports:
+      - "127.0.0.1:3306:3306"
     environment:
       - MYSQL_DATABASE=${DB_DATABASE}
       - MYSQL_USER=${DB_USER}

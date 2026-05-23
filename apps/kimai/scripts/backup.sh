@@ -1,12 +1,8 @@
 #!/bin/bash
 
 FILE=backup/kimai.sql
-KIMAI_CONTAINER=kimai
-DB_CONTAINER=kimai-db
 DB_DATABASE=kimai
-
-# get version
-docker exec -it ${KIMAI_CONTAINER} /opt/kimai/bin/console kimai:version --env=prod
+CONF=.my.cnf
 
 # backup db
-docker exec ${DB_CONTAINER} mysqldump --single-transaction ${DB_DATABASE} > ${FILE}
+mysqldump --defaults-file=${CONF} --single-transaction ${DB_DATABASE} > ${FILE}
