@@ -6,10 +6,10 @@ services:
     volumes:
       - ./data/data:/data
       - ./data/cache:/home/borg/.cache/borg
+      - ./data/ssh:/home/borg/.ssh
       - /etc/localtime:/etc/localtime:ro
       - /repos:/local/repos:rw
       - /srv:/local/srv:ro
-      - /var/run/docker.sock:/var/run/docker.sock:rw
     cap_add:
       - SYS_ADMIN
     devices:
