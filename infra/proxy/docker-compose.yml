@@ -4,7 +4,7 @@ networks:
  
 services:
   proxy:
-    image: 'jc21/nginx-proxy-manager'
+    image: jc21/nginx-proxy-manager:2.15.1
     container_name: proxy-prod
     restart: unless-stopped
     ports:
