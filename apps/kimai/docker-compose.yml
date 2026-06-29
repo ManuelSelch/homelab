@@ -24,7 +24,7 @@ services:
       - proxynet
 
   kimai:
-    image: kimai/kimai2:apache
+    image: kimai/kimai2:2.61.0
     container_name: kimai
     volumes:
       - ./data/data:/opt/kimai/var/data
