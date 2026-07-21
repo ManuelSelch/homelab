@@ -1,0 +1,3 @@
+[submodule "apps/alditalk-unlimited"]
+	path = apps/alditalk-unlimited
+	url = ./apps/alditalk-unlimited/
