@@ -1,3 +1,6 @@
 [submodule "apps/alditalk-unlimited"]
 	path = apps/alditalk-unlimited
 	url = ./apps/alditalk-unlimited/
+[submodule "customers/selch/autodeko-frontend"]
+	path = customers/selch/autodeko-frontend
+	url = git@github.com:ManuelSelch/autodeko-frontend.git
