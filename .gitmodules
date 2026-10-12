@@ -4,3 +4,6 @@
 [submodule "customers/selch/autodeko-frontend"]
 	path = customers/selch/autodeko-frontend
 	url = git@github.com:ManuelSelch/autodeko-frontend.git
+[submodule "internal/camera"]
+	path = internal/camera
+	url = git@github.com:ManuelSelch/camera.git
